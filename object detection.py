@@ -1,38 +1,23 @@
 import cv2
-from matplotlib import pyplot as plt
 
-# Opening image
-img = cv2.imread("C:\\Users\\91895\\Pictures\\Saved Pictures\\nature.jpg")
+# Load the Haar Cascade Classifier for face detection
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# OpenCV opens images as BGR 
-# but we want it as RGB. We'll 
-# also need a grayscale version
-img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# Read the input image
+img = cv2.imread("C:\\Users\\91895\\Pictures\\Saved Pictures\\face.jpg")
 
-# Use minSize because for not 
-# bothering with extra-small 
-# dots that would look like STOP signs
-stop_data = cv2.CascadeClassifier('D:\riwan')
 
-found = stop_data.detectMultiScale(img_gray, minSize=(20, 20))
+# Convert the image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Don't do anything if there's 
-# no sign
-amount_found = len(found)
+# Detect faces in the image
+faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-if amount_found != 0:
-    # There may be more than one
-    # sign in the image
-    for (x, y, width, height) in found:
-        # We draw a green rectangle around
-        # every recognized sign
-        cv2.rectangle(img_rgb, (x, y), 
-                      (x + width, y + height), 
-                      (0, 255, 0), 5)
+# Draw rectangles around the detected faces
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-# Creates the environment of 
-# the picture and shows it
-plt.subplot(1, 1, 1)
-plt.imshow(img_rgb)
-plt.show()
+# Display the result
+cv2.imshow("Faces",img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
